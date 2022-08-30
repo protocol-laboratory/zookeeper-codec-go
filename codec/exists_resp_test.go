@@ -45,11 +45,24 @@ func TestDecodeExistsResp(t *testing.T) {
 func TestEncodeExistsResp(t *testing.T) {
 	resp := &ExistsResp{
 		TransactionId: 1,
-		ZxId:          27,
-		Error:         EC_NoNodeError,
+		ZxId:          31,
+		Error:         EC_OK,
+		Stat: &Stat{
+			CreatedZxId:              28,
+			LastModifiedZxId:         29,
+			Created:                  1661856079977,
+			LastModified:             1661856079980,
+			Version:                  1,
+			ChildVersion:             0,
+			AclVersion:               0,
+			EphemeralOwner:           0,
+			DataLength:               5,
+			NumChildren:              0,
+			LastModifiedChildrenZxId: 28,
+		},
 	}
 	bytes := resp.Bytes()
-	assert.Equal(t, testHex2Bytes(t, "00000001000000000000001bffffff9b"), bytes)
+	assert.Equal(t, testHex2Bytes(t, "00000001000000000000001f00000000000000000000001c000000000000001d00000182ee57606900000182ee57606c00000001000000000000000000000000000000000000000500000000000000000000001c"), bytes)
 }
 
 func TestDecodeExistsRespNoNodeExist(t *testing.T) {

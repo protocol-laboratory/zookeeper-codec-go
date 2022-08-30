@@ -17,46 +17,28 @@
 
 package codec
 
-type OpCode int32
-
-const (
-	OP_ERROR          OpCode = -1
-	OP_CREATE_SESSION OpCode = -10
-	OP_CLOSE_SESSION  OpCode = -11
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-const (
-	OP_NOTIFICATION OpCode = iota
-	OP_CREATE
-	OP_DELETE
-	OP_EXISTS
-	OP_GET_DATA
-	OP_SET_DATA
-	OP_GET_ACL
-	OP_SET_ACL
-	OP_GET_CHILDREN
-	OP_SYNC
-	OP_PING
-	OP_GET_CHILDREN2
-	OP_CHECK
-	OP_MULTI
-	OP_CREATE2
-	OP_RECONFIG
-	OP_CHECK_WATCHES
-	OP_REMOVE_WATCHES
-	OP_CREATE_CONTAINER
-	OP_DELETE_CONTAINER
-	OP_CREATE_TTL
-	OP_MULTI_READ
-)
+func TestDecodeGetChildrenReq(t *testing.T) {
+	bytes := testHex2Bytes(t, "0000000100000008000000012f00")
+	req, err := DecodeGetChildrenReq(bytes)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, req.TransactionId)
+	assert.Equal(t, OP_GET_CHILDREN, req.OpCode)
+	assert.Equal(t, "/", req.Path)
+	assert.False(t, req.Watch)
+}
 
-const (
-	OP_AUTH OpCode = iota + 100
-	OP_SET_WATCHES
-	OP_SASL
-	OP_GET_EPHEMERALS
-	OP_GET_ALL_CHILDREN_NUMBER
-	OP_SET_WATCHES2
-	OP_ADD_WATCH
-	OP_WHO_AM_I
-)
+func TestEncodeGetChildrenReq(t *testing.T) {
+	req := &GetChildrenReq{
+		TransactionId: 1,
+		OpCode:        OP_GET_CHILDREN,
+		Path:          "/",
+		Watch:         false,
+	}
+	bytes := req.Bytes(false)
+	assert.Equal(t, testHex2Bytes(t, "0000000100000008000000012f00"), bytes)
+}
