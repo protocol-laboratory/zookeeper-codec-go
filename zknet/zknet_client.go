@@ -79,6 +79,18 @@ func (z *ZookeeperNetClient) Create(req *codec.CreateReq) (*codec.CreateResp, er
 	return resp, nil
 }
 
+func (z *ZookeeperNetClient) Delete(req *codec.DeleteReq) (*codec.DeleteResp, error) {
+	bytes, err := z.Send(req.Bytes(true))
+	if err != nil {
+		return nil, err
+	}
+	resp, err := codec.DecodeDeleteResp(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (z *ZookeeperNetClient) Exists(req *codec.ExistsReq) (*codec.ExistsResp, error) {
 	bytes, err := z.Send(req.Bytes(true))
 	if err != nil {
@@ -91,12 +103,36 @@ func (z *ZookeeperNetClient) Exists(req *codec.ExistsReq) (*codec.ExistsResp, er
 	return resp, nil
 }
 
+func (z *ZookeeperNetClient) GetData(req *codec.GetDataReq) (*codec.GetDataResp, error) {
+	bytes, err := z.Send(req.Bytes(true))
+	if err != nil {
+		return nil, err
+	}
+	resp, err := codec.DecodeGetDataResp(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (z *ZookeeperNetClient) SetData(req *codec.SetDataReq) (*codec.SetDataResp, error) {
 	bytes, err := z.Send(req.Bytes(true))
 	if err != nil {
 		return nil, err
 	}
 	resp, err := codec.DecodeSetDataResp(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (z *ZookeeperNetClient) GetChildren(req *codec.GetChildrenReq) (*codec.GetChildrenResp, error) {
+	bytes, err := z.Send(req.Bytes(true))
+	if err != nil {
+		return nil, err
+	}
+	resp, err := codec.DecodeGetChildrenResp(bytes)
 	if err != nil {
 		return nil, err
 	}
