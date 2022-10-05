@@ -75,6 +75,14 @@ func putLastZxidSeen(bytes []byte, idx int, x int64) int {
 	return putInt64(bytes, idx, x)
 }
 
+func readPeerZxId(bytes []byte, idx int) (int64, int) {
+	return readInt64(bytes, idx)
+}
+
+func putPeerZxId(bytes []byte, idx int, x int64) int {
+	return putInt64(bytes, idx, x)
+}
+
 func readSessionId(bytes []byte, idx int) (int64, int) {
 	return readInt64(bytes, idx)
 }

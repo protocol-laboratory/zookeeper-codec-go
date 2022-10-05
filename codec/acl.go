@@ -17,35 +17,35 @@
 
 package codec
 
-const (
-	LenAclVersion       = 4
-	LenArray            = 4
-	LenChildVersion     = 4
-	LenCreated          = LenTime
-	LenCreatedZxId      = LenZxId
-	LenDataLength       = 4
-	LenEphemeralOwner   = 8
-	LenError            = 4
-	LenFlags            = 4
-	LenLastModified     = LenTime
-	LenLastModifiedZxId = LenZxId
-	LenLastZxidSeen     = LenZxId
-	LenLength           = 4
-	LenNumberOfChildren = 4
-	LenOpCode           = 4
-	LenPeerZxId         = LenZxId
-	LenPermission       = 4
-	LenProtocolVersion  = 4
-	LenReadonly         = 1
-	LenSessionId        = 8
-	LenTime             = 8
-	LenTimeout          = 4
-	LenTransactionId    = 4
-	LenVersion          = 4
-	LenWatch            = 1
-	LenZxId             = 8
-)
+import "runtime/debug"
 
-var (
-	PasswordEmpty = make([]byte, 16)
-)
+type Acl struct {
+	Perms int
+	Id    *Id
+}
+
+func DecodeAcl(bytes []byte) (acl *Acl, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = PanicToError(r, debug.Stack())
+			acl = nil
+		}
+	}()
+	acl = &Acl{}
+	idx := 0
+	acl.Perms, idx = readInt(bytes, idx)
+	acl.Id, idx = readId(bytes, idx)
+	return acl, nil
+}
+
+func (a *Acl) ByteLength() int {
+	return 4 + a.Id.ByteLength()
+}
+
+func readAcl(bytes []byte, idx int) (*Acl, int) {
+	acl, err := DecodeAcl(bytes[idx:])
+	if err != nil {
+		panic(err)
+	}
+	return acl, idx + acl.ByteLength()
+}

@@ -17,35 +17,17 @@
 
 package codec
 
-const (
-	LenAclVersion       = 4
-	LenArray            = 4
-	LenChildVersion     = 4
-	LenCreated          = LenTime
-	LenCreatedZxId      = LenZxId
-	LenDataLength       = 4
-	LenEphemeralOwner   = 8
-	LenError            = 4
-	LenFlags            = 4
-	LenLastModified     = LenTime
-	LenLastModifiedZxId = LenZxId
-	LenLastZxidSeen     = LenZxId
-	LenLength           = 4
-	LenNumberOfChildren = 4
-	LenOpCode           = 4
-	LenPeerZxId         = LenZxId
-	LenPermission       = 4
-	LenProtocolVersion  = 4
-	LenReadonly         = 1
-	LenSessionId        = 8
-	LenTime             = 8
-	LenTimeout          = 4
-	LenTransactionId    = 4
-	LenVersion          = 4
-	LenWatch            = 1
-	LenZxId             = 8
+import (
+	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 )
 
-var (
-	PasswordEmpty = make([]byte, 16)
-)
+// TestDecodeSnapshot zookeeper without traffic
+func TestDecodeSnapshot0(t *testing.T) {
+	bytes, err := os.ReadFile("snapshot.0")
+	assert.Nil(t, err)
+	s, err := DecodeSnapshot(bytes)
+	assert.Nil(t, err)
+	assert.Len(t, s.AclMap, 1)
+}
